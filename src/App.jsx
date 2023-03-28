@@ -80,6 +80,7 @@ export const App = () => {
                 <a
                   data-cy="FilterUser"
                   href="#/"
+                  key={user.id}
                   name={user.name}
                   onClick={handleFilter}
                 >
