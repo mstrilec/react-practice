@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 
 import classNames from 'classnames';
@@ -21,6 +21,7 @@ const products = productsFromServer.map((product) => {
 
 export const App = () => {
   const [visibleProducts, setVisibleProducts] = useState(products);
+  const [query, setQuery] = useState('');
 
   const handleFilter = (event) => {
     const value = event.target.name;
@@ -35,6 +36,21 @@ export const App = () => {
   const handleAll = () => {
     setVisibleProducts(products);
   };
+
+  const clear = () => {
+    setQuery('');
+  };
+
+  useEffect(() => {
+    const filtered = products.filter((type) => {
+      const lowerCaseName = type.product.name.toLowerCase();
+      const lowerCaseQuery = query.toLowerCase().trim();
+
+      return lowerCaseName.includes(lowerCaseQuery);
+    });
+
+    setVisibleProducts(filtered);
+  }, [query]);
 
   return (
     <div className="section">
@@ -74,7 +90,8 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
@@ -83,11 +100,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {query && (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={clear}
+                    />
+                  )}
                 </span>
               </p>
             </div>
